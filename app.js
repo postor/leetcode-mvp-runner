@@ -1,5 +1,5 @@
 const { join } = require('path')
-const { writeFile } = require('fs-extra')
+const { writeFile, ensureDir, remove } = require('fs-extra')
 const exec = require('await-exec')
 const express = require('express')
 const { json } = require('body-parser')
@@ -13,17 +13,22 @@ app.use(json())
 app.post('/', async (req, res) => {
   const { key, code } = req.body
   const fileName = uniqid() + '.js'
-  const filePath = join(__dirname, '.tmp', fileName)
+  const tmpDir = join(__dirname, '.tmp')
+  await ensureDir(tmpDir)
+  const filePath = join(tmpDir, fileName)
   await writeFile(filePath, code)
   const dockerMapPath = `/app/answers/${key}.js`
   const jestCmd = `yarn jest ${key}.test.js`
   const vfolder = `-v ${__dirname}:/app`
-  const vfile = `-v ${join(__dirname, '.tmp', fileName)}:${dockerMapPath}`
+  const vfile = `-v ${filePath}:${dockerMapPath}`
   const nodeImage = process.env.NODE_IMAGE || 'node:8-alpine'
-  const command = `docker run -it --rm ${vfolder} ${vfile} -w=/app ${nodeImage} ${jestCmd}`
+  const command = `docker run --rm ${vfolder} ${vfile} -w=/app ${nodeImage} ${jestCmd}`
   try {
-    res.json(await exec(command))
+    let rtn = await exec(command)
+    await remove(filePath)
+    res.json(rtn)
   } catch (e) {
+    await remove(filePath)
     res.json(e)
   }
 })
