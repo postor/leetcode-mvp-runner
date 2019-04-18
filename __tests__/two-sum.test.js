@@ -7,7 +7,7 @@ twoSum = app.__get__('twoSum');
 
 describe('tow-sum', function () {
   datas.forEach(({ params, result }, i) => {
-    it(`case ${i}`, function () {
+    it(`Input ${params.map(JSON.stringify).join(',')} Expect ${JSON.stringify(result)}`, function () {
       let rtn = twoSum(...params)
       expect(result.sort()).toEqual(rtn.sort())
     })

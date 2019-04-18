@@ -10,7 +10,7 @@ addTwoNumbers = app.__get__('addTwoNumbers')
 
 describe('add-two-numbers', function () {
   datas.forEach(({ params, result }, i) => {
-    it(`case ${i}`, function () {
+    it(`Input ${params.map(JSON.stringify).join(',')} Expect ${JSON.stringify(result)}`, function () {
       let rtn = addTwoNumbers(...params.map(x => arr2linked(x)))
       expect(linked2arr(rtn)).toEqual(result)
     })
