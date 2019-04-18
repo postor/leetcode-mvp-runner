@@ -19,7 +19,8 @@ app.post('/', async (req, res) => {
   const jestCmd = `yarn jest ${key}.test.js`
   const vfolder = `-v ${__dirname}:/app`
   const vfile = `-v ${join(__dirname, '.tmp', fileName)}:${dockerMapPath}`
-  const command = `docker run -it --rm ${vfolder} ${vfile} -w=/app node ${jestCmd}`
+  const nodeImage = process.env.NODE_IMAGE || 'node:8-alpine'
+  const command = `docker run -it --rm ${vfolder} ${vfile} -w=/app ${nodeImage} ${jestCmd}`
   try {
     res.json(await exec(command))
   } catch (e) {
