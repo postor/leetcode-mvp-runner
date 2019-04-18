@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/postor/leetcode-mvp-runner#readme",
   "dependencies": {
+    "await-exec": "^0.1.2",
     "body-parser": "^1.18.3",
     "express": "^4.16.4",
     "fs-extra": "^7.0.1",
