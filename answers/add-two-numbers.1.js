@@ -1,0 +1,39 @@
+/**
+ * Definition for singly-linked list.
+ * function ListNode(val) {
+ *     this.val = val;
+ *     this.next = null;
+ * }
+ */
+
+const ListNode = require('../__common__/ListNode')
+
+const arr2linked = require('../__common__/array2linkedlist')
+const linked2arr = require('../__common__/linkedlist2array')
+/**
+ * @param {ListNode} l1
+ * @param {ListNode} l2
+ * @return {ListNode}
+ */
+var addTwoNumbers = function(l1, l2) {
+  return add(l1,l2)
+};
+
+function add(la,lb,step=0){
+  if(!la&&!lb&&!step) return null
+  
+  var val = (la?la.val:0)+(lb?lb.val:0)+step
+  var newStep = val>=10?1:0
+  var newVal = val>=10?val-10:val
+  
+  var node = new ListNode(newVal)
+  node.next = add(la?la.next:null,lb?lb.next:null,newStep)
+  return node
+}
+
+
+const datas = require('../__data__/add-two-numbers.data')
+datas.forEach(({ params, result }, i) => {
+  let rtn = addTwoNumbers(...params.map(x=>arr2linked(x)))
+  console.log(linked2arr(rtn))
+})
