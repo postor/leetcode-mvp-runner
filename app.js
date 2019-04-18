@@ -8,6 +8,7 @@ const app = express()
 const port = 3002
 
 console.log('Make sure you run on Linux, got Docker and Node image!')
+const nodeImage = process.env.NODE_IMAGE || 'node:8-alpine'
 app.get('/', (req, res) => res.send('Hello World!'))
 app.use(json())
 app.post('/', async (req, res) => {
@@ -21,7 +22,6 @@ app.post('/', async (req, res) => {
   const jestCmd = `yarn jest ${key}.test.js`
   const vfolder = `-v ${__dirname}:/app`
   const vfile = `-v ${filePath}:${dockerMapPath}`
-  const nodeImage = process.env.NODE_IMAGE || 'node:8-alpine'
   const command = `docker run --rm ${vfolder} ${vfile} -w=/app ${nodeImage} ${jestCmd}`
   try {
     let rtn = await exec(command)
@@ -31,5 +31,11 @@ app.post('/', async (req, res) => {
     await remove(filePath)
     res.json(e)
   }
-})
-app.listen(port, () => console.log(`Example app listening on port ${port}!`))
+});
+
+(async () => {
+  console.log(`pulling docker image ${nodeImage}`)
+  await exec(`docker pull ${nodeImage}`)
+  console.log(`docker image ${nodeImage} loaded!`)
+  app.listen(port, () => console.log(`Example app listening on port ${port}!`))
+})()
