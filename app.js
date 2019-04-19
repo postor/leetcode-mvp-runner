@@ -14,15 +14,14 @@ app.use(json())
 app.post('/', async (req, res) => {
   const { key, code } = req.body
   const fileName = uniqid() + '.js'
-  const tmpDir = join(__dirname, '.tmp')
+  const tmpDir = process.env.TEMP_DIR || join(__dirname, '.tmp')
   await ensureDir(tmpDir)
   const filePath = join(tmpDir, fileName)
   await writeFile(filePath, code)
   const dockerMapPath = `/app/answers/${key}.js`
   const jestCmd = `yarn jest ${key}.test.js`
-  const vfolder = `-v ${__dirname}:/app`
   const vfile = `-v ${filePath}:${dockerMapPath}`
-  const command = `docker run --rm ${vfolder} ${vfile} -w=/app ${nodeImage} ${jestCmd}`
+  const command = `docker run --rm ${vfile} -w=/app ${nodeImage} ${jestCmd}`
   try {
     let rtn = await exec(command)
     await remove(filePath)
