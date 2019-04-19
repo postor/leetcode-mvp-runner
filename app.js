@@ -8,7 +8,7 @@ const app = express()
 const port = 3002
 
 console.log('Make sure you run on Linux, got Docker and Node image!')
-const nodeImage = process.env.RUNNER_NODE_IMAGE || 'postor/nodejs-docker'
+const nodeImage = process.env.RUNNER_NODE_IMAGE || 'postor/leetcode-mvp-services'
 app.get('/', (req, res) => res.send('Hello World!'))
 app.use(json())
 app.post('/', async (req, res) => {
