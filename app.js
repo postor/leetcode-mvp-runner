@@ -8,7 +8,7 @@ const app = express()
 const port = 3002
 
 console.log('Make sure you run on Linux, got Docker and Node image!')
-const nodeImage = process.env.NODE_IMAGE || 'node:8-alpine'
+const nodeImage = process.env.NODE_IMAGE || 'postor/nodejs-docker'
 app.get('/', (req, res) => res.send('Hello World!'))
 app.use(json())
 app.post('/', async (req, res) => {
@@ -20,9 +20,8 @@ app.post('/', async (req, res) => {
   await writeFile(filePath, code)
   const dockerMapPath = `/app/answers/${key}.js`
   const jestCmd = `yarn jest ${key}.test.js`
-  const vfolder = `-v ${process.env.RUNNER_APP_VOLUME || __dirname}:/app`
   const vfile = `-v ${filePath}:${dockerMapPath}`
-  const command = `docker run --rm ${vfolder} ${vfile} -w=/app ${nodeImage} ${jestCmd}`
+  const command = `docker run --rm ${vfile} ${nodeImage} ${jestCmd}`
   try {
     let rtn = await exec(command)
     await remove(filePath)
