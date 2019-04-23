@@ -37,10 +37,10 @@ app.post('/', async (req, res) => {
 });
 
 (async () => {
-  Object.keys(languages).forEach(({ image }) => {
+  await Promise.all(Object.keys(languages).map(async ({ image }) => {
     console.log(`pulling docker image ${image}`)
     await exec(`docker pull ${image}`)
     console.log(`docker image ${image} loaded!`)
-  })
+  }))
   app.listen(port, () => console.log(`Example app listening on port ${port}!`))
 })()
