@@ -1,2 +1,2 @@
-.settings
-target
+/node_modules
+/yarn.lock

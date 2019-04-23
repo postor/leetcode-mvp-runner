@@ -1,9 +1,13 @@
-FROM maven:jdk-8-alpine
-
-ADD . /app
+FROM postor/nodejs-docker
 
 WORKDIR /app
 
-RUN chmod +x test.sh && mvn dependency:go-offline
+COPY package.json /app/package.json
 
-CMD ./test.sh
+RUN npm i
+
+COPY . /app
+
+CMD node app.js
+
+
