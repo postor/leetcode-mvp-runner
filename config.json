@@ -1,0 +1,10 @@
+{
+  "languages":{
+    "nodejs":{
+      "image": "postor/leetcode-mvp-runner-node"
+    },
+    "java":{
+      "image": "postor/leetcode-mvp-runner-java"
+    }
+  }
+}
